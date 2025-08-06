@@ -1,0 +1,30 @@
+name: Build and Test
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        run: |
+          sudo apt-get install -y uuid-dev
+
+      - name: Build
+        run: |
+          cmake \
+            -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
+
+      - name: Test
+        run: |
+          ctest --test-dir build
